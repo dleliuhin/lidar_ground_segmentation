@@ -1,4 +1,8 @@
+#ifdef GUI
+#include <QApplication>
+#else
 #include <QCoreApplication>
+#endif
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QObject>
@@ -6,13 +10,20 @@
 #include <QList>
 
 #include "csf.h"
+#ifdef GUI
+#include "customscatter.h"
+#endif
 
 using VecInt = std::vector<int>;
 
 //=======================================================================================
 int main( int argc, char **argv )
 {
+#ifdef GUI
+    QApplication qapp( argc, argv );
+#else
     QCoreApplication qapp( argc, argv );
+#endif
 
     //-----------------------------------------------------------------------------------
 
@@ -56,6 +67,27 @@ int main( int argc, char **argv )
     VecInt nonground;
 
     csfilter.split( ground, nonground );
+
+    //-----------------------------------------------------------------------------------
+
+    csf::PointCloud ground_points;
+    csf::PointCloud nonground_points;
+
+    for ( const auto id: ground )
+        ground_points.push_back( cloud.at(id) );
+
+    for ( const auto id: nonground )
+        nonground_points.push_back( cloud.at(id) );
+
+    //-----------------------------------------------------------------------------------
+
+#ifdef GUI
+
+    auto scatter = new CustomScatter();
+    scatter->draw( ground_points, 0 );
+    scatter->draw( nonground_points, 1 );
+
+#endif
 
     //-----------------------------------------------------------------------------------
 

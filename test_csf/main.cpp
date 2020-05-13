@@ -1,19 +1,13 @@
 #include "gtest/gtest.h"
 
-#include <iostream>
-#include "clusterization.h"
-
-#include "vlog.h"
-
-#include "defs.h"
-#include "config.h"
+#include <QDebug>
 
 using namespace std;
 
 //=======================================================================================
 TEST( bounding_box_test, test_main )
 {
-    LidarData scan;
+
 }
 //=======================================================================================
 
@@ -21,7 +15,7 @@ TEST( bounding_box_test, test_main )
 //=======================================================================================
 int main( int argc, char **argv )
 {
-    vdeb << "Program testing is started....";
+    qDebug() << "Program testing is started....";
 
     ::testing::InitGoogleTest( &argc, argv );
 
