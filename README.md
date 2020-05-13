@@ -8,6 +8,10 @@ W. Zhang, J. Qi*, P. Wan, H. Wang, D. Xie, X. Wang, and G. Yan, “An Easy-to-Us
 
 ---
 
+![](./doc/demo.png)
+
+---
+
 ## Installation
 
 The installation procedures in Linux Ubuntu 16.04/14.04 32-bit LTS or Linux Mint 19.* 64-bit are shown here as examples.<br />
@@ -74,17 +78,9 @@ git checkout release
 ./scripts/run.sh
 ```
 
-Build project without updating submodules:<br />
-
-```
-cd lidar_ground_segmentation
-git checkout release
-./scripts/build.sh
-```
-
 Or using Qt Creator:<br />
 
-*Projects->Run->* and insert the code:<br />
+```*Projects->Build->Run->*```<br />
 
 ---
 
