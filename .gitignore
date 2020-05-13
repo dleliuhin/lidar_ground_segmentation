@@ -1,0 +1,7 @@
+# Qt Build temporary files and folders
+build*
+!build.sh
+!build_all.sh
+*.txt.user
+*user*
+*.save
