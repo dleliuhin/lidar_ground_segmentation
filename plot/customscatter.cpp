@@ -70,7 +70,7 @@ void CustomScatter::draw( const csf::PointCloud& data, int type )
         auto tmp = new QScatter3DSeries;
         QScatterDataArray scatter_data;
 
-        scatter_data << QVector3D( pnt.y, pnt.x, pnt.z );
+        scatter_data << QVector3D( float( pnt.y ), float( pnt.x ), float( pnt.z ) );
 
         tmp->dataProxy()->addItems( scatter_data );
         tmp->setItemSize( 0.03F );

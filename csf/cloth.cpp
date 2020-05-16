@@ -41,7 +41,6 @@ Cloth::Cloth( Vec3 &origin_pos,
     , _particles_width   ( pwidth     )
     , _particles_height  ( pheight    )
     , _constraint_iters ( rigidness   )
-    , _time_step        ( time_step        )
     , _smooth_thr       ( smooth_thr )
     , _height_thr       ( height_thr )
 {

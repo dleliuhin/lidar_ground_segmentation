@@ -7,15 +7,19 @@
 #include "point_cloud.h"
 
 //=======================================================================================
+#pragma pack(push, 1)
 struct Params
 {
-    bool sloop_smooth { true };
     double time_step { 0.65 };
     double class_thr { 0.5 };
     double cloth_resolution {1};
+
     int rigidness {3};
     int iterations { 500 };
+
+    bool sloop_smooth { true };
 };
+#pragma pack(pop)
 //=======================================================================================
 
 //=======================================================================================
@@ -41,9 +45,9 @@ public:
     }
 
     // get size of pointcloud
-    std::size_t size()
+    int size()
     {
-        return _point_cloud.size();
+        return _point_cloud.count();
     }
 
     void setPointCloud( csf::PointCloud& pc );

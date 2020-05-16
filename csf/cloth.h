@@ -98,8 +98,6 @@ private:
     int _particles_height;
 
     int _constraint_iters;
-    int _rigidness {0};
-    double _time_step;
 
     QVector<Particle> _particles;
 

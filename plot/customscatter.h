@@ -9,10 +9,8 @@
 #include <QObject>
 #include <QList>
 
-using namespace QtDataVisualization;
-
 //=======================================================================================
-class CustomScatter : public Q3DScatter
+class CustomScatter : public QtDataVisualization::Q3DScatter
 {
     Q_OBJECT
 
@@ -31,7 +29,7 @@ public slots:
 
 private:
 
-    QMap<int, QScatter3DSeries*> _layers;
+    QMap<int, QtDataVisualization::QScatter3DSeries*> _layers;
 
     //-----------------------------------------------------------------------------------
 

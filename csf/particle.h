@@ -10,19 +10,20 @@ static constexpr auto damping = 0.01;
 static constexpr auto max_inf = 9999999999;
 static constexpr auto min_inf = - 9999999999;
 
-static constexpr std::array<double, 15> single_move_1 =
+static QVector<double> single_move_1 =
 {
     0, 0.3, 0.51, 0.657, 0.7599, 0.83193, 0.88235, 0.91765,
     0.94235, 0.95965, 0.97175, 0.98023, 0.98616, 0.99031, 0.99322
 };
 
-static constexpr std::array<double, 15> double_move_1 =
+static QVector<double> double_move_1 =
 {
     0, 0.3, 0.42, 0.468, 0.4872, 0.4949, 0.498,
     0.4992, 0.4997, 0.4999, 0.4999, 0.5, 0.5, 0.5, 0.5
 };
 
 //=======================================================================================
+#pragma pack(push, 1)
 class Particle
 {
 public:
@@ -110,27 +111,28 @@ public:
 
 private:
 
-    bool _movable { true };
-    double _mass {1};
     Vec3 _acceleration { 0, 0, 0 };
     Vec3 _accumulated_normal { 0, 0, 0 };
-    double _time_step_2 {0};
-
     Vec3 _pos { 0, 0, 0 };
     Vec3 _old_pos { 0, 0, 0 };
-    bool _is_visited { false };
-    int _neighbour_count {0};
-    int _pos_x {0};
-    int _pos_y {0};
-    int _c_pos {0};
 
     QVector<Particle*> _neighbors_list;
     QVector<int> _corresponding_point_list;
-    int _nearest_point_id {0};
 
+    double _mass {1};
+    double _time_step_2 {0};
     double _nearest_point_height { min_inf };
     double _tmp_dist { max_inf };
+
+    int _pos_x {0};
+    int _pos_y {0};
+    int _c_pos {0};
+    int _nearest_point_id {0};
+
+    bool _is_visited { false };
+    bool _movable { true };
 };
+#pragma pack(pop)
 //=======================================================================================
 
 #endif // PARTICLE_H

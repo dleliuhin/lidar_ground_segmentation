@@ -1,10 +1,10 @@
 #include "particle.h"
 
 //=======================================================================================
-Particle::Particle( Vec3 &pos, double time_step )
-    : _time_step_2        ( time_step   )
-    , _pos                ( pos         )
-    , _old_pos            ( pos         )
+Particle::Particle( Vec3& pos, double time_step )
+    : _pos                ( pos       )
+    , _old_pos            ( pos       )
+    , _time_step_2        ( time_step )
 {
 
 }

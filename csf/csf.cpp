@@ -105,7 +105,7 @@ void CSF::split( QVector<int>& ground_idx, QVector<int>& no_ground_idx )
         auto maxDiff = cloth.time_step();
         cloth.terr_collision();
 
-        if ( ( maxDiff != 0 ) && ( maxDiff < 0.005 ) )
+        if ( ( abs( maxDiff ) > 0 ) && ( maxDiff < 0.005 ) )
             break;
     }
 
