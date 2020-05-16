@@ -11,82 +11,89 @@ class Vec3
 {
 public:
 
-    double f[3];
+    Vec3( double x, double y, double z )
+        : _f ( { x, y, z } )
+    {
+
+    }
+
+    Vec3() = default;
 
     //-----------------------------------------------------------------------------------
 
-    Vec3( double x, double y, double z )
+    const std::array<double, 3> & f() const
     {
-        f[0] = x;
-        f[1] = y;
-        f[2] = z;
+        return _f;
     }
-
-    Vec3() {}
 
     //-----------------------------------------------------------------------------------
 
     double length()
     {
-        return sqrt( f[0] * f[0] + f[1] * f[1] + f[2] * f[2] );
+        return sqrt( pow( _f.at(0), 2 ) + pow( _f.at(1), 2 ) + pow( _f.at(2), 2 ) );
     }
 
     Vec3 normalized()
     {
         double l = length();
 
-        return Vec3( f[0] / l, f[1] / l, f[2] / l );
+        return { _f[0] / l, _f[1] / l, _f[2] / l };
     }
 
     //-----------------------------------------------------------------------------------
 
     void operator +=( const Vec3& v )
     {
-        f[0] += v.f[0];
-        f[1] += v.f[1];
-        f[2] += v.f[2];
+        _f[0] += v._f[0];
+        _f[1] += v._f[1];
+        _f[2] += v._f[2];
     }
 
     Vec3 operator /( const double a )
     {
-        return Vec3( f[0] / a, f[1] / a, f[2] / a );
+        return { _f[0] / a, _f[1] / a, _f[2] / a };
     }
 
     Vec3 operator -( const Vec3& v )
     {
-        return Vec3( f[0] - v.f[0], f[1] - v.f[1], f[2] - v.f[2] );
+        return { _f[0] - v._f[0], _f[1] - v._f[1], _f[2] - v._f[2] };
     }
 
     Vec3 operator +( const Vec3& v )
     {
-        return Vec3( f[0] + v.f[0], f[1] + v.f[1], f[2] + v.f[2] );
+        return { _f[0] + v._f[0], _f[1] + v._f[1], _f[2] + v._f[2] };
     }
 
     Vec3 operator *( const double a )
     {
-        return Vec3( f[0] * a, f[1] * a, f[2] * a );
+        return { _f[0] * a, _f[1] * a, _f[2] * a };
     }
 
     Vec3 operator -()
     {
-        return Vec3( - f[0], - f[1], - f[2] );
+        return { - _f[0], - _f[1], - _f[2] };
     }
 
     //-----------------------------------------------------------------------------------
 
     Vec3 cross( const Vec3& v )
     {
-        return Vec3(
-                    f[1] * v.f[2] - f[2] * v.f[1],
-                f[2] * v.f[0] - f[0] * v.f[2],
-                f[0] * v.f[1] - f[1] * v.f[0]
-                );
+        return { _f[1] * v._f[2] - _f[2] * v._f[1],
+                    _f[2] * v._f[0] - _f[0] * v._f[2],
+                    _f[0] * v._f[1] - _f[1] * v._f[0] };
     }
 
     double dot( const Vec3& v )
     {
-        return f[0] * v.f[0] + f[1] * v.f[1] + f[2] * v.f[2];
+        return _f[0] * v._f[0] + _f[1] * v._f[1] + _f[2] * v._f[2];
     }
+
+    //-----------------------------------------------------------------------------------
+
+private:
+
+    std::array<double, 3> _f;
+
 };
 //=======================================================================================
 

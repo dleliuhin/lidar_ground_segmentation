@@ -9,12 +9,12 @@
 //=======================================================================================
 struct Params
 {
-    bool sloop_smooth;
-    double time_step;
-    double class_thr;
-    double cloth_resolution;
-    int rigidness;
-    int iterations;
+    bool sloop_smooth { true };
+    double time_step { 0.65 };
+    double class_thr { 0.5 };
+    double cloth_resolution {1};
+    int rigidness {3};
+    int iterations { 500 };
 };
 //=======================================================================================
 
@@ -23,16 +23,12 @@ class CSF
 {
 public:
 
-    Params params;
-    int index;
+    CSF( int _index );
+    CSF() = default;
 
-    //-----------------------------------------------------------------------------------
+    void params( const Params& other );
 
-    CSF( const int index );
-    CSF();
-    ~CSF();
-
-    void setPointCloud( const std::vector<csf::Point>& points );
+    void setPointCloud( const QVector<csf::Point>& points );
 
     inline csf::PointCloud & getPointCloud()
     {
@@ -53,11 +49,14 @@ public:
     void setPointCloud( csf::PointCloud& pc );
 
 
-    void split( std::vector<int>& ground_idx, std::vector<int>& no_ground_idx );
+    void split( QVector<int>& ground_idx, QVector<int>& no_ground_idx );
 
     //-----------------------------------------------------------------------------------
 
 private:
+
+    Params _params;
+    int _index {0};
 
     csf::PointCloud _point_cloud;
 

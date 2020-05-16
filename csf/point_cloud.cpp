@@ -13,7 +13,7 @@ void csf::PointCloud::set_bounding_box( Point& pmin, Point& pmax )
 
     for ( auto i = 1; i < size(); i++ )
     {
-        const csf::Point& P = at(i);
+        const auto P = at(i);
 
         for ( auto d = 0; d < 3; ++d )
         {

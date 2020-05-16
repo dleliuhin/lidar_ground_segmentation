@@ -14,7 +14,7 @@
 #include "customscatter.h"
 #endif
 
-using VecInt = std::vector<int>;
+using VecInt = QVector<int>;
 
 //=======================================================================================
 int main( int argc, char **argv )
@@ -31,7 +31,7 @@ int main( int argc, char **argv )
     QFile jfile( fname );
     jfile.open( QFile::ReadOnly );
 
-    auto doc = QJsonDocument().fromJson( jfile.readAll() );
+    auto doc = QJsonDocument::fromJson( jfile.readAll() );
 
     //-----------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ int main( int argc, char **argv )
 
     csf::PointCloud cloud;
 
-    for ( const auto& pnt: data )
+    for ( const auto pnt: data )
     {
         csf::Point tmp;
 
@@ -56,12 +56,16 @@ int main( int argc, char **argv )
 
     csfilter.setPointCloud( cloud );
 
-    csfilter.params.sloop_smooth     = true;
-    csfilter.params.time_step        = 0.8;
-    csfilter.params.class_thr        = 0.35;
-    csfilter.params.cloth_resolution = 1.0;
-    csfilter.params.iterations       = 30;
-    csfilter.params.rigidness        = 1.0;
+    Params params;
+
+    params.sloop_smooth     = true;
+    params.time_step        = 0.8;
+    params.class_thr        = 0.35;
+    params.cloth_resolution = 1.0;
+    params.iterations       = 30;
+    params.rigidness        = 1.0;
+
+    csfilter.params( params );
 
     VecInt ground;
     VecInt nonground;

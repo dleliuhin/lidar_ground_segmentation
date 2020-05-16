@@ -19,13 +19,13 @@ class CustomScatter : public Q3DScatter
 public:
 
     CustomScatter();
-    ~CustomScatter();
+    ~CustomScatter() override;
 
     //-------------------------------------------------------------------------------
 
 public slots:
 
-    void draw( const csf::PointCloud& data, const int type );
+    void draw( const csf::PointCloud& data, int type );
 
     //-------------------------------------------------------------------------------
 

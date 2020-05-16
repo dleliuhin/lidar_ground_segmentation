@@ -1,67 +1,127 @@
 #include "particle.h"
 
 //=======================================================================================
-Particle::Particle(Vec3 pos, double time_step)
-    : _movable            ( true            )
-    , _mass               ( 1               )
-    , _acceleration       ( Vec3( 0, 0, 0 ) )
-    , _accumulated_normal ( Vec3( 0, 0, 0 ) )
-    , _time_step_2        ( time_step       )
-    , pos                 ( pos             )
-    , old_pos             ( pos             )
+Particle::Particle( Vec3 &pos, double time_step )
+    : _time_step_2        ( time_step   )
+    , _pos                ( pos         )
+    , _old_pos            ( pos         )
 {
-    is_visited = false;
-    neibor_count = 0;
-    pos_x = 0;
-    pos_y = 0;
-    c_pos = 0;
-    nearest_point_height = min_inf;
-    tmp_dist = max_inf;
+
 }
 //=======================================================================================
-Particle::Particle()
-    : _movable            ( true            )
-    , _mass               ( 1               )
-    , _acceleration       ( Vec3( 0, 0, 0 ) )
-    , _accumulated_normal ( Vec3( 0, 0, 0 ) )
-    , pos                 ( Vec3( 0, 0, 0 ) )
-    , old_pos             ( Vec3( 0, 0, 0 ) )
+
+
+//=======================================================================================
+const Vec3 & Particle::pos() const
 {
-    is_visited = false;
-    neibor_count = 0;
-    pos_x = 0;
-    pos_y = 0;
-    c_pos = 0;
-    nearest_point_height = min_inf;
-    tmp_dist = max_inf;
+    return _pos;
+}
+
+const Vec3 &Particle::old_pos() const
+{
+    return _old_pos;
 }
 //=======================================================================================
+int Particle::pos_x() const
+{
+    return _pos_x;
+}
+//=======================================================================================
+void Particle::pos_x( int val )
+{
+    _pos_x = val;
+}
+//=======================================================================================
+int Particle::pos_y() const
+{
+    return _pos_y;
+}
+//=======================================================================================
+void Particle::pos_y( int val )
+{
+    _pos_y = val;
+}
+//=======================================================================================
+double Particle::nearest_point_height() const
+{
+    return _nearest_point_height;
+}
+//=======================================================================================
+QVector<Particle *> &Particle::neighbors_list()
+{
+    return _neighbors_list;
+}
+//=======================================================================================
+void Particle::is_visited( bool val )
+{
+    _is_visited = val;
+}
+//=======================================================================================
+bool Particle::is_visited() const
+{
+    return _is_visited;
+}
+//=======================================================================================
+QVector<int> & Particle::corresponding_point_list()
+{
+    return _corresponding_point_list;
+}
+//=======================================================================================
+void Particle::tmp_dist( double val )
+{
+    _tmp_dist = val;
+}
+//=======================================================================================
+double Particle::tmp_dist() const
+{
+    return _tmp_dist;
+}
+//=======================================================================================
+void Particle::nearest_point_height( double val )
+{
+    _nearest_point_height = val;
+}
+//=======================================================================================
+void Particle::nearest_point_id( int val )
+{
+    _nearest_point_id = val;
+}
+//=======================================================================================
+void Particle::c_pos( int val )
+{
+    _c_pos = val;
+}
+//=======================================================================================
+int Particle::c_pos() const
+{
+    return _c_pos;
+}
+//=======================================================================================
+
 
 //=======================================================================================
 void Particle::time_step()
 {
     if ( _movable )
     {
-        Vec3 temp = pos;
-        pos = pos + ( pos - old_pos ) * ( 1.0 - damping ) + _acceleration * _time_step_2;
-        old_pos = temp;
+        Vec3 temp = _pos;
+        _pos = _pos + ( _pos - _old_pos ) * ( 1.0 - damping ) + _acceleration * _time_step_2;
+        _old_pos = temp;
     }
 }
 //=======================================================================================
-void Particle::satisfy_constraint_self( const int constraint_times )
+void Particle::satisfy_constraint_self( int constraint_times )
 {
     auto p1 = this;
 
-    for ( auto i = 0; i < neighbors_list.size(); i++ )
+    for ( const auto& p2: _neighbors_list )
     {
-        auto p2 = neighbors_list[i];
-
-        Vec3 correctionVector( 0, p2->pos.f[1] - p1->pos.f[1], 0 );
+        Vec3 correctionVector( 0, p2->pos().f()[1] - p1->_pos.f()[1], 0 );
 
         if ( p1->is_movable() && p2->is_movable() )
         {
             auto correctionVectorHalf = correctionVector * (
-                        constraint_times > 14 ? 0.5 : double_move_1[constraint_times]
+                        constraint_times > 14 ? 0.5 : double_move_1.at( constraint_times )
                                                );
             p1->offset_pos( correctionVectorHalf );
             p2->offset_pos( - correctionVectorHalf );
@@ -70,7 +130,7 @@ void Particle::satisfy_constraint_self( const int constraint_times )
         else if ( p1->is_movable() && !p2->is_movable() )
         {
             auto correctionVectorHalf = correctionVector * (
-                        constraint_times > 14 ? 1 : single_move_1[constraint_times]
+                        constraint_times > 14 ? 1 : single_move_1.at( constraint_times )
                                                );
             p1->offset_pos( correctionVectorHalf );
         }
@@ -78,7 +138,7 @@ void Particle::satisfy_constraint_self( const int constraint_times )
         else if ( !p1->is_movable() && p2->is_movable() )
         {
             auto correctionVectorHalf = correctionVector * (
-                        constraint_times > 14 ? 1 : single_move_1[constraint_times]
+                        constraint_times > 14 ? 1 : single_move_1.at( constraint_times )
                                                );
             p2->offset_pos( - correctionVectorHalf );
         }
