@@ -16,7 +16,7 @@ const Vec3 & Particle::pos() const
 {
     return _pos;
 }
-
+//=======================================================================================
 const Vec3 &Particle::old_pos() const
 {
     return _old_pos;
@@ -116,7 +116,7 @@ void Particle::satisfy_constraint_self( int constraint_times )
 
     for ( const auto& p2: _neighbors_list )
     {
-        Vec3 correctionVector( 0, p2->pos().f()[1] - p1->_pos.f()[1], 0 );
+        Vec3 correctionVector( 0, p2->pos().f().at(1) - p1->_pos.f().at(1), 0 );
 
         if ( p1->is_movable() && p2->is_movable() )
         {

@@ -24,8 +24,8 @@ void CDist::calc_cloud_dist( Cloth& cloth,
         auto pc_x = pc.at(i).x;
         auto pc_z = pc.at(i).z;
 
-        auto delta_x = pc_x - cloth.origin_pos().f()[0];
-        auto delta_z = pc_z - cloth.origin_pos().f()[2];
+        auto delta_x = pc_x - cloth.origin_pos().f().at(0);
+        auto delta_z = pc_z - cloth.origin_pos().f().at(2);
 
         auto col0 = int( delta_x / cloth.step_x() );
         auto row0 = int( delta_z / cloth.step_y() );
@@ -39,13 +39,13 @@ void CDist::calc_cloud_dist( Cloth& cloth,
         auto subdeltaX = ( delta_x - col0 * cloth.step_x() ) / cloth.step_x();
         auto subdeltaZ = ( delta_z - row0 * cloth.step_y() ) / cloth.step_y();
 
-        auto fxy = cloth.get_particle( col0, row0 )->pos().f()[1] *
+        auto fxy = cloth.get_particle( col0, row0 )->pos().f().at(1) *
                 ( 1 - subdeltaX ) * ( 1 - subdeltaZ ) +
-                cloth.get_particle( col3, row3 )->pos().f()[1] *
+                cloth.get_particle( col3, row3 )->pos().f().at(1) *
                 ( 1 - subdeltaX ) * subdeltaZ +
-                cloth.get_particle( col2, row2 )->pos().f()[1] *
+                cloth.get_particle( col2, row2 )->pos().f().at(1) *
                 subdeltaX * subdeltaZ +
-                cloth.get_particle( col1, row1 )->pos().f()[1] *
+                cloth.get_particle( col1, row1 )->pos().f().at(1) *
                 subdeltaX * ( 1 - subdeltaZ );
 
         auto height_var = fxy - pc[i].y;

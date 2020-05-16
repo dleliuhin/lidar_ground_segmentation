@@ -56,22 +56,22 @@ public:
 
     Vec3 operator -( const Vec3& v )
     {
-        return { _f[0] - v._f[0], _f[1] - v._f[1], _f[2] - v._f[2] };
+        return { _f.at(0) - v._f.at(0), _f.at(1) - v._f.at(1), _f.at(2) - v._f.at(2) };
     }
 
     Vec3 operator +( const Vec3& v )
     {
-        return { _f[0] + v._f[0], _f[1] + v._f[1], _f[2] + v._f[2] };
+        return { _f.at(0) + v._f.at(0), _f.at(1) + v._f.at(1), _f.at(2) + v._f.at(2) };
     }
 
     Vec3 operator *( const double a )
     {
-        return { _f[0] * a, _f[1] * a, _f[2] * a };
+        return { _f.at(0) * a, _f.at(1) * a, _f.at(2) * a };
     }
 
     Vec3 operator -()
     {
-        return { - _f[0], - _f[1], - _f[2] };
+        return { - _f.at(0), - _f.at(1), - _f.at(2) };
     }
 
     //-----------------------------------------------------------------------------------

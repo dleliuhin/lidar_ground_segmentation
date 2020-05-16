@@ -51,9 +51,9 @@ Cloth::Cloth( Vec3 &origin_pos,
     for ( auto i = 0; i < pwidth; i++ )
         for ( auto j = 0; j < pheight; j++ )
         {
-            Vec3 pos( origin_pos.f()[0] + i * step_x,
-                    origin_pos.f()[1],
-                    origin_pos.f()[2] + j * step_y );
+            Vec3 pos( origin_pos.f().at(0) + i * step_x,
+                      origin_pos.f().at(1),
+                      origin_pos.f().at(2) + j * step_y );
 
             _particles[ j * pwidth + i ] = Particle( pos, time_step_2 );
             _particles[ j * pwidth + i ].pos_x(i);
@@ -126,18 +126,18 @@ int Cloth::particles_height() const
 //=======================================================================================
 double Cloth::time_step()
 {
-    for ( auto i = 0; i < _particles.count(); i++ )
-        _particles[i].time_step();
+    for ( auto& p: _particles )
+        p.time_step();
 
-    for ( auto i = 0; i < _particles.count(); i++ )
-        _particles[i].satisfy_constraint_self( _constraint_iters );
+    for ( auto& p: _particles )
+        p.satisfy_constraint_self( _constraint_iters );
 
     auto max_diff = 0.0;
 
-    for ( auto i = 0; i < _particles.count(); i++ )
-        if ( _particles[i].is_movable() )
+    for ( auto& p: _particles )
+        if ( p.is_movable() )
         {
-            auto diff = fabs( _particles[i].old_pos().f()[1] - _particles[i].pos().f()[1] );
+            auto diff = fabs( p.old_pos().f().at(1) - p.pos().f().at(1) );
 
             if ( diff > max_diff )
                 max_diff = diff;
@@ -148,8 +148,8 @@ double Cloth::time_step()
 //=======================================================================================
 void Cloth::add_force( const Vec3& direction )
 {
-    for ( auto& _particle: _particles )
-        _particle.add_force( direction );
+    for ( auto& p: _particles )
+        p.add_force( direction );
 }
 //=======================================================================================
 void Cloth::terr_collision()
@@ -158,9 +158,9 @@ void Cloth::terr_collision()
     {
         Vec3 v = _particles[i].get_pos();
 
-        if ( v.f()[1] < _heightvals[i] )
+        if ( v.f().at(1) < _heightvals[i] )
         {
-            _particles[i].offset_pos( Vec3( 0, _heightvals[i] - v.f()[1], 0 ) );
+            _particles[i].offset_pos( { 0, _heightvals[i] - v.f().at(1), 0 } );
             _particles[i].make_unmovable();
         }
     }
@@ -181,7 +181,7 @@ void Cloth::movable_filter()
                 auto sum = 1;
                 auto index = y * _particles_width + x;
 
-                connected.push_back( XY( x, y ) );
+                connected.push_back( { x, y } );
                 _particles[ index ].is_visited( true );
 
                 que.push( index );
@@ -204,7 +204,7 @@ void Cloth::movable_filter()
                             {
                                 sum++;
                                 ptc_left->is_visited( true );
-                                connected.push_back( XY( cur_x - 1, cur_y ) );
+                                connected.push_back( { cur_x - 1, cur_y } );
                                 que.push( _particles_width * cur_y + cur_x - 1 );
                                 neighbor.push_back( sum - 1 );
                                 ptc_left->c_pos( sum - 1 );
@@ -225,7 +225,7 @@ void Cloth::movable_filter()
                             {
                                 sum++;
                                 ptc_right->is_visited( true );
-                                connected.push_back( XY( cur_x + 1, cur_y ) );
+                                connected.push_back( { cur_x + 1, cur_y } );
                                 que.push( _particles_width * cur_y + cur_x + 1 );
                                 neighbor.push_back( sum - 1 );
                                 ptc_right->c_pos( sum - 1 );
@@ -246,7 +246,7 @@ void Cloth::movable_filter()
                             {
                                 sum++;
                                 ptc_bottom->is_visited( true );
-                                connected.push_back( XY( cur_x, cur_y - 1 ) );
+                                connected.push_back( { cur_x, cur_y - 1 } );
                                 que.push( _particles_width * ( cur_y - 1 ) + cur_x );
                                 neighbor.push_back( sum - 1 );
                                 ptc_bottom->c_pos( sum - 1 );
@@ -259,7 +259,7 @@ void Cloth::movable_filter()
 
                     if ( cur_y < _particles_height - 1 )
                     {
-                        auto ptc_top = get_particle(cur_x, cur_y + 1);
+                        auto ptc_top = get_particle( cur_x, cur_y + 1 );
 
                         if ( ptc_top->is_movable() )
                         {
@@ -267,7 +267,7 @@ void Cloth::movable_filter()
                             {
                                 sum++;
                                 ptc_top->is_visited( true );
-                                connected.push_back( XY( cur_x, cur_y + 1 ) );
+                                connected.push_back( { cur_x, cur_y + 1 } );
                                 que.push( _particles_width * ( cur_y + 1 ) + cur_x );
                                 neighbor.push_back( sum - 1 );
                                 ptc_top->c_pos( sum - 1 );
@@ -311,12 +311,13 @@ QVector<int> Cloth::find_unmovable( const QVector<XY>& connected )
 
                 auto cond_1 = fabs( _heightvals.at( index ) -
                                     _heightvals.at( index_ref ) ) < _smooth_thr;
-                auto cond_2 = ptc->get_pos().f()[1] - _heightvals.at( index ) < _height_thr;
+                auto cond_2 = ptc->get_pos().f().at(1) - _heightvals.at( index ) < _height_thr;
 
                 if ( cond_1 && cond_2 )
                 {
                     auto offset_vec = Vec3( 0,
-                                            _heightvals[index] - ptc->get_pos().f()[1], 0 );
+                                            _heightvals.at( index ) - ptc->get_pos().f().at(1),
+                                            0 );
                     _particles[ index ].offset_pos( offset_vec );
                     ptc->make_unmovable();
                     edge_points.push_back(i);
@@ -334,8 +335,8 @@ QVector<int> Cloth::find_unmovable( const QVector<XY>& connected )
             {
                 auto index_ref = y * _particles_width + x + 1;
 
-                auto cond_1 = fabs( _heightvals[index] -
-                                    _heightvals[index_ref] ) < _smooth_thr;
+                auto cond_1 = fabs( _heightvals.at( index ) -
+                                    _heightvals.at( index_ref ) ) < _smooth_thr;
 
                 auto cond_2 = ptc->get_pos().f()[1] - _heightvals[index] < _height_thr;
 
@@ -360,15 +361,17 @@ QVector<int> Cloth::find_unmovable( const QVector<XY>& connected )
             {
                 auto index_ref = ( y - 1 ) * _particles_width + x;
 
-                auto cond_1 = fabs( _heightvals[index] -
-                                    _heightvals[index_ref] ) < _smooth_thr;
+                auto cond_1 = fabs( _heightvals.at( index ) -
+                                    _heightvals.at( index_ref ) ) < _smooth_thr;
 
-                auto cond_2 = ( ptc->get_pos().f()[1] - _heightvals[index] < _height_thr );
+                auto cond_2 = ( ptc->get_pos().f().at(1) -
+                                _heightvals.at( index ) < _height_thr );
 
                 if ( cond_1 && cond_2 )
                 {
                     auto offsetVec = Vec3( 0,
-                                           _heightvals[index] - ptc->get_pos().f()[1], 0 );
+                                           _heightvals.at( index ) - ptc->get_pos().f().at(1),
+                                           0 );
                     _particles[index].offset_pos( offsetVec );
                     ptc->make_unmovable();
                     edge_points.push_back(i);
@@ -386,15 +389,17 @@ QVector<int> Cloth::find_unmovable( const QVector<XY>& connected )
             {
                 auto index_ref = ( y + 1 ) * _particles_width + x;
 
-                auto cond_1 = fabs( _heightvals[index] -
-                                    _heightvals[index_ref] ) < _smooth_thr;
+                auto cond_1 = fabs( _heightvals.at( index ) -
+                                    _heightvals.at( index_ref ) ) < _smooth_thr;
 
-                auto cond_2 = ( ptc->get_pos().f()[1] - _heightvals[index] < _height_thr );
+                auto cond_2 = ( ptc->get_pos().f().at(1) -
+                                _heightvals.at( index ) < _height_thr );
 
                 if ( cond_1 && cond_2 )
                 {
                     auto offsetVec = Vec3( 0,
-                                           _heightvals[index] - ptc->get_pos().f()[1], 0 );
+                                           _heightvals.at( index ) - ptc->get_pos().f().at(1),
+                                           0 );
                     _particles[index].offset_pos( offsetVec );
                     ptc->make_unmovable();
                     edge_points.push_back(i);
@@ -412,10 +417,8 @@ void Cloth::handle_slop_connected( const QVector<int>& edge_points,
                                    const QVector<XY>& connected,
                                    const QVector<QVector<int>>& neighbors )
 {
-    QVector<bool> visited;
-
-    for ( auto i = 0; i < connected.count(); i++ )
-        visited.push_back( false );
+    QVector<bool> visited( connected.count() );
+    visited.fill( false );
 
     std::queue<int> que;
 
@@ -430,32 +433,34 @@ void Cloth::handle_slop_connected( const QVector<int>& edge_points,
         auto index = que.front();
         que.pop();
 
-        auto index_center = connected[index].y() * _particles_width + connected[index].x();
+        auto index_center = connected.at( index ).y() *
+                _particles_width + connected.at( index ).x();
 
-        for ( auto i = 0; i < neighbors[index].count(); i++ )
+        for ( auto i = 0; i < neighbors.at( index ).count(); i++ )
         {
-            auto index_neibor = connected[neighbors[index][i]].y() *
+            auto index_neibor = connected.at( neighbors.at( index ).at(i) ).y() *
                     _particles_width +
-                    connected[neighbors[index][i]].x();
+                    connected.at( neighbors.at( index ).at(i) ).x();
 
-            auto cond_1 = fabs( _heightvals[index_center] -
-                                _heightvals[index_neibor] ) < _smooth_thr;
+            auto cond_1 = fabs( _heightvals.at( index_center ) -
+                                _heightvals.at( index_neibor) ) < _smooth_thr;
 
-            auto cond_2 = fabs( _particles[index_neibor].get_pos().f()[1] -
-                    _heightvals[index_neibor] ) < _height_thr;
+            auto cond_2 = fabs( _particles[index_neibor].get_pos().f().at(1) -
+                    _heightvals.at( index_neibor ) ) < _height_thr;
 
             if ( cond_1 && cond_2 )
             {
                 auto offsetVec = Vec3( 0,
-                                       _heightvals[index_neibor] -
-                                       _particles[index_neibor].get_pos().f()[1], 0 );
+                                       _heightvals.at( index_neibor ) -
+                                       _particles[index_neibor].get_pos().f().at(1),
+                                       0 );
                 _particles[index_neibor].offset_pos( offsetVec );
                 _particles[index_neibor].make_unmovable();
 
-                if ( !visited[neighbors[index][i]] )
+                if ( !visited.at( neighbors.at( index ).at(i) ) )
                 {
-                    que.push(neighbors[index][i]);
-                    visited[neighbors[index][i]] = true;
+                    que.push( neighbors.at( index ).at(i) );
+                    visited[ neighbors.at( index ).at(i) ] = true;
                 }
             }
         }
