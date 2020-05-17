@@ -1,36 +1,51 @@
 #include "constraint.h"
 
+
+static constexpr auto half = 0.5;
+static constexpr auto one = 1;
+
+
 //=======================================================================================
-void Constraint::satisfy_constraint( const int constraint_times )
+Constraint::Constraint(Particle *p1, Particle *p2)
+    : _p1 (p1)
+    , _p2 (p2)
 {
-    Vec3 correctionVector( 0, p2->pos.f[1] - p1->pos.f[1], 0 );
 
-    if ( p1->is_movable() && p2->is_movable() )
+}
+//=======================================================================================
+
+
+//=======================================================================================
+void Constraint::satisfy_constraint( int constraint_times )
+{
+    Vec3 correctionVector( 0, _p2->pos().f().at(1) - _p1->pos().f().at(1), 0 );
+
+    if ( _p1->is_movable() && _p2->is_movable() )
     {
         auto correctionVectorHalf = correctionVector * (
-            constraint_times > 14 ? 0.5 : double_move[ constraint_times - 1 ]
+            constraint_times > double_move.size() ? half : double_move.at( constraint_times - 1 )
         );
 
-        p1->offset_pos( correctionVectorHalf );
-        p2->offset_pos( - correctionVectorHalf );
+        _p1->offset_pos( correctionVectorHalf );
+        _p2->offset_pos( - correctionVectorHalf );
     }
 
-    else if (p1->is_movable() && !p2->is_movable())
+    else if ( _p1->is_movable() && !_p2->is_movable() )
     {
         auto correctionVectorHalf = correctionVector * (
-            constraint_times > 14 ? 1 : single_move[ constraint_times - 1 ]
+            constraint_times > single_move.size() ? one : single_move.at( constraint_times - 1 )
         );
 
-        p1->offset_pos( correctionVectorHalf );
+        _p1->offset_pos( correctionVectorHalf );
     }
 
-    else if ( !p1->is_movable() && p2->is_movable() )
+    else if ( !_p1->is_movable() && _p2->is_movable() )
     {
         auto correctionVectorHalf = correctionVector * (
-            constraint_times > 14 ? 1 : single_move[ constraint_times - 1 ]
+            constraint_times > single_move.size() ? one : single_move.at( constraint_times - 1 )
         );
 
-        p2->offset_pos( - correctionVectorHalf );
+        _p2->offset_pos( - correctionVectorHalf );
     }
 }
 //=======================================================================================

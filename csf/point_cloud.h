@@ -1,7 +1,9 @@
 ﻿#ifndef POINT_CLOUD_H
 #define POINT_CLOUD_H
 
-#include <vector>
+#include <QVector>
+
+#include <array>
 
 //=======================================================================================
 namespace csf
@@ -10,32 +12,18 @@ namespace csf
     //===================================================================================
     struct Point
     {
-        union
-        {
-            struct
-            {
-                double x;
-                double y;
-                double z;
-            };
-
-            double u[3];
-        };
-
-        Point()
-            : x (0),
-              y (0),
-              z (0)
-        {}
+        double x {0};
+        double y {0};
+        double z {0};
     };
     //===================================================================================
 
     //===================================================================================
-    class PointCloud : public std::vector<Point>
+    class PointCloud : public QVector<Point>
     {
     public:
 
-        void set_bounding_box( Point& bbMin, Point& bbMax );
+        void set_bounding_box( Point& pmin, Point& pmax );
 
     };
     //===================================================================================

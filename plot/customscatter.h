@@ -9,29 +9,27 @@
 #include <QObject>
 #include <QList>
 
-using namespace QtDataVisualization;
-
 //=======================================================================================
-class CustomScatter : public Q3DScatter
+class CustomScatter : public QtDataVisualization::Q3DScatter
 {
     Q_OBJECT
 
 public:
 
     CustomScatter();
-    ~CustomScatter();
+    ~CustomScatter() override;
 
     //-------------------------------------------------------------------------------
 
 public slots:
 
-    void draw( const csf::PointCloud& data, const int type );
+    void draw( const csf::PointCloud& data, int type );
 
     //-------------------------------------------------------------------------------
 
 private:
 
-    QMap<int, QScatter3DSeries*> _layers;
+    QMap<int, QtDataVisualization::QScatter3DSeries*> _layers;
 
     //-----------------------------------------------------------------------------------
 

@@ -4,12 +4,12 @@
 //=======================================================================================
 double Rasterization::find_height_scanline( Particle *p, Cloth& cloth )
 {
-    auto xpos = p->pos_x;
-    auto ypos = p->pos_y;
+    auto xpos = p->pos_x();
+    auto ypos = p->pos_y();
 
-    for ( auto i = xpos + 1; i < cloth.particles_width; i++ )
+    for ( auto i = xpos + 1; i < cloth.particles_width(); i++ )
     {
-        auto crresHeight = cloth.get_particle( i, ypos )->nearest_point_height;
+        auto crresHeight = cloth.get_particle( i, ypos )->nearest_point_height();
 
         if ( crresHeight > min_inf )
             return crresHeight;
@@ -17,7 +17,7 @@ double Rasterization::find_height_scanline( Particle *p, Cloth& cloth )
 
     for ( auto i = xpos - 1; i >= 0; i-- )
     {
-        auto crresHeight = cloth.get_particle( i, ypos )->nearest_point_height;
+        auto crresHeight = cloth.get_particle( i, ypos )->nearest_point_height();
 
         if ( crresHeight > min_inf )
             return crresHeight;
@@ -25,34 +25,34 @@ double Rasterization::find_height_scanline( Particle *p, Cloth& cloth )
 
     for ( auto j = ypos - 1; j >= 0; j-- )
     {
-        auto crresHeight = cloth.get_particle( xpos, j )->nearest_point_height;
+        auto crresHeight = cloth.get_particle( xpos, j )->nearest_point_height();
 
         if ( crresHeight > min_inf )
             return crresHeight;
     }
 
-    for ( auto j = ypos + 1; j < cloth.particles_height; j++ )
+    for ( auto j = ypos + 1; j < cloth.particles_height(); j++ )
     {
-        auto crresHeight = cloth.get_particle( xpos, j )->nearest_point_height;
+        auto crresHeight = cloth.get_particle( xpos, j )->nearest_point_height();
 
         if ( crresHeight > min_inf )
             return crresHeight;
     }
 
-    return find_height_neighbor( p, cloth );
+    return find_height_neighbor(p);
 }
 //=======================================================================================
-double Rasterization::find_height_neighbor( Particle* p, Cloth& cloth )
+double Rasterization::find_height_neighbor( Particle* p )
 {
     std::queue<Particle*>  nqueue;
     std::vector<Particle*> pbacklist;
 
-    auto neiborsize = p->neighbors_list.size();
+    auto neiborsize = p->neighbors_list().count();
 
     for ( auto i = 0; i < neiborsize; i++ )
     {
-        p->is_visited = true;
-        nqueue.push( p->neighbors_list[i] );
+        p->is_visited( true );
+        nqueue.push( p->neighbors_list()[i] );
     }
 
     while ( !nqueue.empty() )
@@ -61,34 +61,31 @@ double Rasterization::find_height_neighbor( Particle* p, Cloth& cloth )
         nqueue.pop();
         pbacklist.push_back( pneighbor );
 
-        if ( pneighbor->nearest_point_height > min_inf )
+        if ( pneighbor->nearest_point_height() > min_inf )
         {
-            for ( auto i = 0; i < pbacklist.size(); i++ )
-                pbacklist[i]->is_visited = false;
+            for ( auto& p: pbacklist )
+                p->is_visited( false );
 
             while ( !nqueue.empty() )
             {
                 auto pp = nqueue.front();
-                pp->is_visited = false;
+                pp->is_visited( false );
                 nqueue.pop();
             }
 
-            return pneighbor->nearest_point_height;
+            return pneighbor->nearest_point_height();
         }
 
-        else
+        auto nsize = pneighbor->neighbors_list().size();
+
+        for ( auto i = 0; i < nsize; i++ )
         {
-            auto nsize = pneighbor->neighbors_list.size();
+            auto ptmp = pneighbor->neighbors_list()[i];
 
-            for ( auto i = 0; i < nsize; i++ )
+            if ( !ptmp->is_visited() )
             {
-                auto ptmp = pneighbor->neighbors_list[i];
-
-                if ( !ptmp->is_visited )
-                {
-                    ptmp->is_visited = true;
-                    nqueue.push( ptmp );
-                }
+                ptmp->is_visited( true );
+                nqueue.push( ptmp );
             }
         }
     }
@@ -98,34 +95,34 @@ double Rasterization::find_height_neighbor( Particle* p, Cloth& cloth )
 //=======================================================================================
 void Rasterization::raster_terrain( Cloth& cloth,
                                     csf::PointCloud& pc,
-                                    std::vector<double>& heightVal )
+                                    QVector<double>& heightVal )
 {
     for ( auto i = 0; i < pc.size(); i++ )
     {
         auto pc_x = pc[i].x;
         auto pc_z = pc[i].z;
 
-        auto deltaX = pc_x - cloth.origin_pos.f[0];
-        auto deltaZ = pc_z - cloth.origin_pos.f[2];
-        auto col    = int(deltaX / cloth.step_x + 0.5);
-        auto row    = int(deltaZ / cloth.step_y + 0.5);
+        auto deltaX = pc_x - cloth.origin_pos().f()[0];
+        auto deltaZ = pc_z - cloth.origin_pos().f()[2];
+        auto col    = int(deltaX / cloth.step_x() + 0.5);
+        auto row    = int(deltaZ / cloth.step_y() + 0.5);
 
         if ( ( col >= 0 ) && ( row >= 0 ) )
         {
             auto pt = cloth.get_particle( col, row );
 
-            pt->corresponding_point_list.push_back(i);
+            pt->corresponding_point_list().push_back(i);
 
             auto pc2particleDist = _square_dist( pc_x,
                                                  pc_z,
-                                                 pt->get_pos().f[0],
-                    pt->get_pos().f[2] );
+                                                 pt->get_pos().f()[0],
+                    pt->get_pos().f()[2] );
 
-            if ( pc2particleDist < pt->tmp_dist )
+            if ( pc2particleDist < pt->tmp_dist() )
             {
-                pt->tmp_dist = pc2particleDist;
-                pt->nearest_point_height = pc[i].y;
-                pt->nearest_point_id = i;
+                pt->tmp_dist( pc2particleDist );
+                pt->nearest_point_height( pc[i].y );
+                pt->nearest_point_id(i);
             }
         }
     }
@@ -135,7 +132,7 @@ void Rasterization::raster_terrain( Cloth& cloth,
     for ( auto i = 0; i < cloth.get_size(); i++ )
     {
         auto pcur = cloth.getParticle1d(i);
-        auto nearestHeight = pcur->nearest_point_height;
+        auto nearestHeight = pcur->nearest_point_height();
 
         if ( nearestHeight > min_inf )
             heightVal[i] = nearestHeight;
@@ -148,9 +145,8 @@ void Rasterization::raster_terrain( Cloth& cloth,
 
 
 //=======================================================================================
-double Rasterization::_square_dist( const double x1, const double y1,
-                                    const double x2, const double y2 )
+double Rasterization::_square_dist( double x1, double y1, double x2, double y2 )
 {
-    return ( ( (x1) - (x2) ) * ( (x1) - (x2) ) + ( (y1) - (y2) ) * ( (y1) - (y2) ) );
+    return ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 );
 }
 //=======================================================================================

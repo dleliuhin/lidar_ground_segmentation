@@ -34,7 +34,7 @@ CustomScatter::CustomScatter()
     this->setShadowQuality( QAbstract3DGraph::ShadowQualityNone );
 
     this->scene()->activeCamera()->setCameraPreset( Q3DCamera::CameraPresetBehindHigh );
-    this->scene()->activeCamera()->setCameraPosition( 0, 100, 450.0f );
+    this->scene()->activeCamera()->setCameraPosition( 0, 100, 450.0F );
     this->scene()->activeCamera()->setXRotation( 180 );
     this->scene()->activeCamera()->setYRotation( - 90 );
 
@@ -54,7 +54,7 @@ CustomScatter::~CustomScatter()
 
 
 //=======================================================================================
-void CustomScatter::draw( const csf::PointCloud& data, const int type )
+void CustomScatter::draw( const csf::PointCloud& data, int type )
 {
     if ( data.empty() )
     {
@@ -67,18 +67,18 @@ void CustomScatter::draw( const csf::PointCloud& data, const int type )
         if ( data.empty() )
             continue;
 
-        QScatter3DSeries* tmp = new QScatter3DSeries;
+        auto tmp = new QScatter3DSeries;
         QScatterDataArray scatter_data;
 
-        scatter_data << QVector3D( pnt.y, pnt.x, pnt.z );
+        scatter_data << QVector3D( float( pnt.y ), float( pnt.x ), float( pnt.z ) );
 
         tmp->dataProxy()->addItems( scatter_data );
-        tmp->setItemSize( 0.03f );
+        tmp->setItemSize( 0.03F );
         tmp->setBaseColor( colors.value( type ) );
         tmp->setMesh( QAbstract3DSeries::MeshPoint );
 
         if ( type == 0 )
-            tmp->setItemSize( 0.01f );
+            tmp->setItemSize( 0.01F );
 
         this->addSeries( tmp );
     }

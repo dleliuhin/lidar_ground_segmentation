@@ -5,24 +5,18 @@
 #include "point_cloud.h"
 
 //=======================================================================================
-class c2cdist
+class CDist
 {
 public:
 
-    c2cdist( const double threshold )
-        : _threshold ( threshold )
-    {
-
-    }
-
-    ~c2cdist() {}
+    CDist( double threshold );
 
     //-----------------------------------------------------------------------------------
 
     void calc_cloud_dist( Cloth& cloth,
                           const csf::PointCloud& pc,
-                          std::vector<int>& ground,
-                          std::vector<int>& nonground );
+                          QVector<int>& ground,
+                          QVector<int>& nonground );
 
     //-----------------------------------------------------------------------------------
 
