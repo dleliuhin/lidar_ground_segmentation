@@ -1,4 +1,5 @@
 #!/bin/bash
 rm -rf ../build-*
 rm -rf build*
-rm -rf livox_cluster.pro.*
+rm -rf src/build*
+rm -rf src/livox_cluster.pro.*

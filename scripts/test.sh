@@ -2,18 +2,18 @@
 
 if [ -d "test_csf/build_test" ];
 then
-        rm -rf test_csf/build_test/*
+        rm -rf tests/build/*
 else
-        mkdir -p test_csf/build_test
+        mkdir -p tests/build
 fi
 
-cd test_csf/build_test
+cd tests/build
 
 qmake ..
 
 make -j $(($(nproc) - 1))
 
 shopt -s extglob
-rm -rf !("test_csf")
+rm -rf !("tests")
 
-./test_csf
+./tests

@@ -36,8 +36,6 @@ class Cloth
 {
 public:
 
-    //-----------------------------------------------------------------------------------
-
     Cloth( Vec3& origin_pos,
            int pwidth,
            int pheight,
@@ -55,10 +53,9 @@ public:
     double step_y() const;
     int particles_width() const;
     int particles_height() const;
+    double time_step();
 
     //-----------------------------------------------------------------------------------
-
-    double time_step();
 
     void add_force( const Vec3& direction );
 

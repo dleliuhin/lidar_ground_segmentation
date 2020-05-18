@@ -9,6 +9,6 @@ fi
 
 cd build
 
-qmake ..
+qmake ../src/
 
 make -j $(($(nproc) - 1))

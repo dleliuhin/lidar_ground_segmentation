@@ -4,7 +4,7 @@ TARGET = lidar_ground_segmentation
 
 #========================================================================================
 
-DEFINES += GUI
+DEFINES -= GUI
 DEFINES += TRACE
 DEFINES += QT_DEPRECATED_WARNINGS
 
@@ -33,9 +33,9 @@ contains( DEFINES, GUI ): include( $$PWD/plot/plot.pri )
 
 #========================================================================================
 
-OTHER_FILES += *.md
-OTHER_FILES += *.txt
+OTHER_FILES += ../*.md
+OTHER_FILES += ../data/*.txt
 OTHER_FILES += cfg/*
-OTHER_FILES += scripts/*
+OTHER_FILES += ../scripts/*
 
 #========================================================================================
