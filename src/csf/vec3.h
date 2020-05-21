@@ -49,7 +49,7 @@ public:
         _f[2] += v._f.at(2);
     }
 
-    Vec3 operator /( const double a )
+    Vec3  operator /( const double a )
     {
         return { _f.at(0) / a, _f.at(1) / a, _f.at(2) / a };
     }

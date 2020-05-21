@@ -501,4 +501,3 @@ Particle * Cloth::getParticle1d( int index )
     return & _particles[ index ];
 }
 //=======================================================================================
-

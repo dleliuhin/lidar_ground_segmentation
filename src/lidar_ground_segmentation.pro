@@ -33,9 +33,9 @@ contains( DEFINES, GUI ): include( $$PWD/plot/plot.pri )
 
 #========================================================================================
 
-OTHER_FILES += *.md
-OTHER_FILES += *.txt
+OTHER_FILES += ../*.md
+OTHER_FILES += ../data/*.txt
 OTHER_FILES += cfg/*
-OTHER_FILES += scripts/*
+OTHER_FILES += ../scripts/*
 
 #========================================================================================

@@ -1,9 +1,7 @@
 #include "constraint.h"
 
-
 static constexpr auto half = 0.5;
 static constexpr auto one = 1;
-
 
 //=======================================================================================
 Constraint::Constraint(Particle *p1, Particle *p2)
