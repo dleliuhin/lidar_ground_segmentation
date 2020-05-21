@@ -47,7 +47,7 @@ double Particle::nearest_point_height() const
     return _nearest_point_height;
 }
 //=======================================================================================
-QVector<Particle *> &Particle::neighbors_list()
+QVector<Particle *> & Particle::neighbors_list()
 {
     return _neighbors_list;
 }
@@ -105,7 +105,7 @@ void Particle::time_step()
     if ( _movable )
     {
         Vec3 temp = _pos;
-        _pos = _pos + ( _pos - _old_pos ) * ( 1.0 - damping ) + _acceleration * _time_step_2;
+        _pos = _pos + ( _pos - _old_pos ) * damping + _acceleration * _time_step_2;
         _old_pos = temp;
     }
 }
@@ -116,32 +116,27 @@ void Particle::satisfy_constraint_self( int constraint_times )
 
     for ( const auto& p2: _neighbors_list )
     {
-        Vec3 correctionVector( 0, p2->pos().f().at(1) - p1->_pos.f().at(1), 0 );
+        Vec3 correction_vec = { 0, p2->pos().f().at(1) - p1->_pos.f().at(1), 0 };
 
         if ( p1->is_movable() && p2->is_movable() )
         {
-            auto correctionVectorHalf = correctionVector * (
+            auto correction_vec_half = correction_vec * (
                         constraint_times > 14 ? 0.5 : double_move_1.at( constraint_times )
                                                );
-            p1->offset_pos( correctionVectorHalf );
-            p2->offset_pos( - correctionVectorHalf );
+            p1->offset_pos( correction_vec_half );
+            p2->offset_pos( - correction_vec_half );
+
+            continue;
         }
 
-        else if ( p1->is_movable() && !p2->is_movable() )
-        {
-            auto correctionVectorHalf = correctionVector * (
-                        constraint_times > 14 ? 1 : single_move_1.at( constraint_times )
-                                               );
-            p1->offset_pos( correctionVectorHalf );
-        }
+        auto correction_vec_half = correction_vec * (
+                    constraint_times > 14 ? 1 : single_move_1.at( constraint_times ) );
+
+        if ( p1->is_movable() && !p2->is_movable() )
+            p1->offset_pos( correction_vec_half );
 
         else if ( !p1->is_movable() && p2->is_movable() )
-        {
-            auto correctionVectorHalf = correctionVector * (
-                        constraint_times > 14 ? 1 : single_move_1.at( constraint_times )
-                                               );
-            p2->offset_pos( - correctionVectorHalf );
-        }
+            p2->offset_pos( - correction_vec_half );
     }
 }
 //=======================================================================================

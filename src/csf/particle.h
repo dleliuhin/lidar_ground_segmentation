@@ -7,7 +7,7 @@
 
 //=======================================================================================
 
-static constexpr auto damping = 0.01;
+static constexpr auto damping = 1.0 - 0.01;
 static constexpr auto max_inf = 9999999999;
 static constexpr auto min_inf = - 9999999999;
 

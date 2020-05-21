@@ -4,7 +4,7 @@ TARGET = lidar_ground_segmentation
 
 #========================================================================================
 
-DEFINES -= GUI
+DEFINES += GUI
 DEFINES += TRACE
 DEFINES += QT_DEPRECATED_WARNINGS
 

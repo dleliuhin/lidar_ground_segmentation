@@ -27,7 +27,7 @@ int main( int argc, char **argv )
 
     //-----------------------------------------------------------------------------------
 
-    auto fname = "../lidar_ground_segmentation/dataset.txt";
+    auto fname = "../data/dataset.txt";
     QFile jfile( fname );
     jfile.open( QFile::ReadOnly );
 
