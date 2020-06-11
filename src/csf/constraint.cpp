@@ -21,7 +21,7 @@ void Constraint::satisfy_constraint( int constraint_times )
     if ( _p1->is_movable() && _p2->is_movable() )
     {
         auto correctionVectorHalf = correctionVector * (
-            constraint_times > double_constraints.size() ? half : double_constraints.at( constraint_times - 1 )
+            constraint_times > double_move.size() ? half : double_move.at( constraint_times - 1 )
         );
 
         _p1->offset_pos( correctionVectorHalf );
@@ -31,7 +31,7 @@ void Constraint::satisfy_constraint( int constraint_times )
     else if ( _p1->is_movable() && !_p2->is_movable() )
     {
         auto correctionVectorHalf = correctionVector * (
-            constraint_times > single_constraints.size() ? one : single_constraints.at( constraint_times - 1 )
+            constraint_times > single_move.size() ? one : single_move.at( constraint_times - 1 )
         );
 
         _p1->offset_pos( correctionVectorHalf );
@@ -40,7 +40,7 @@ void Constraint::satisfy_constraint( int constraint_times )
     else if ( !_p1->is_movable() && _p2->is_movable() )
     {
         auto correctionVectorHalf = correctionVector * (
-            constraint_times > single_constraints.size() ? one : single_constraints.at( constraint_times - 1 )
+            constraint_times > single_move.size() ? one : single_move.at( constraint_times - 1 )
         );
 
         _p2->offset_pos( - correctionVectorHalf );
